@@ -32,7 +32,7 @@ DB_PASSWORD = postgres
 DB_HOST = localhost
 DB_PORT = 5432
 ```
-### 2. Подключить DB PostgreSQL
+### 3. Подключить DB PostgreSQL
 
 ```
 # Запуск образа Docker
@@ -43,7 +43,7 @@ docker-compose up --build -d
 ./manage.py migrate
 ```
 
-### 2. Запустить сервер
+### 4. Запустить сервер
 ```
 ./manage.py runserver
 ```
