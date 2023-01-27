@@ -17,7 +17,7 @@ python3 -m venv venv
 pip install poetry
 ```
 ```
-# Установка зависимостей 
+# Установка зависимостей
 poetry install
 ```
 
@@ -36,7 +36,7 @@ DB_PORT = 5432
 
 ```
 # Запуск образа Docker
-docker-compose up --build -d 
+docker-compose up --build -d
 ```
 ```
 # Выполнить миграции
@@ -47,6 +47,3 @@ docker-compose up --build -d
 ```
 ./manage.py runserver
 ```
-
-
-
