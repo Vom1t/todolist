@@ -9,7 +9,7 @@ from core.models import User
 class CustomUserAdmin(UserAdmin):
     list_display = ('username', 'email', 'first_name', 'last_name')
     search_fields = ('username', 'email', 'first_name', 'last_name')
-    list_filter = ("is_staff", "is_superuser", "is_active")
+    list_filter = ('is_staff', 'is_superuser', 'is_active')
     readonly_fields = ('last_login', 'date_joined')
     fieldsets = (
         (None, {'fields': ('username',)}),
