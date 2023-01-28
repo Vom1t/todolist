@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="todolist@localhost" uuid="f20106a1-9557-414e-92b3-fc0930f73919">
+    <data-source source="LOCAL" name="todolist@localhost" uuid="167a64e9-d214-45aa-997e-e65a6bc8037d">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://localhost:5431/todolist</jdbc-url>
+      <jdbc-url>jdbc:postgresql://localhost:5432/todolist</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>
