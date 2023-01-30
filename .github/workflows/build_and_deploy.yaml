@@ -27,3 +27,29 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  deploy:
+    runs-on: ubuntu-22.04
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Get tag
+        id: vars
+        run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+      - name: Update docker compose
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          TAG_NAME: ${{ steps.vars.outputs.tag }}
+        run: |
+          envsubst '$DOCKERHUB_USERNAME, $TAG_NAME' < deploy/docker-compose.prod.yaml > deploy/docker-compose.yaml
+          rm -f deploy/docker-compose.prod.yaml
+      - name: Copy on server
+        uses: appleboy/scp-actions@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "deploy/*"
+          target: "todolist"
+          strip_components: 1
