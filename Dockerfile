@@ -6,12 +6,12 @@ EXPOSE 8000
 
 RUN pip install "poetry==1.3.2"
 
-COPY poetry.lock pyproject.toml ./home/deploy/
+COPY poetry.lock pyproject.toml ./
 
 RUN poetry config virtualenvs.create false \
     && poetry install --no-dev --no-root
 
-COPY . ./home/deploy/
+COPY . .
 
 ENTRYPOINT ["bash", "entrypoint.sh"]
 
