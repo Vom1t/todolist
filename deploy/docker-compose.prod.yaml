@@ -18,22 +18,18 @@ services:
       retries: 5
 
   api:
-    image: ${secrets.DOCKERHUB_USERNAME}/todolist:${TAG_NAME}
+    image: ${DOCKERHUB_USERNAME}/todolist:${TAG_NAME}
     restart: always
     env_file:
       - .env
-    environment:
-      DB_HOST: db
     depends_on:
       db:
         condition: service_healthy
 
   collect_static:
-    image: ${secrets.DOCKERHUB_USERNAME}/todolist:${TAG_NAME}
+    image: ${DOCKERHUB_USERNAME}/todolist:${TAG_NAME}
     env_file:
       - .env
-    environment:
-      DB_HOST: db
     depends_on:
       db:
         condition: service_healthy
