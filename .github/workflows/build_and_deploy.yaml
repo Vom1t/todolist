@@ -58,8 +58,9 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           source: "deploy/*"
-          target: todolist
+          target: diplom/todolist
           strip_components: 1
+
       - name: Run compose
         uses: appleboy/ssh-action@master
         with:
