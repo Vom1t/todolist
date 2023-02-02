@@ -58,7 +58,7 @@ class Goal(BaseModel):
 class GoalComment(BaseModel):
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='comments')
     goal = models.ForeignKey(Goal, on_delete=models.CASCADE, related_name='comments')
-    text = models.TextField
+    text = models.TextField()
 
     class Meta:
         verbose_name = 'Комментарий'
