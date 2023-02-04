@@ -45,12 +45,13 @@ INSTALLED_APPS = [
     'social_django',
     'django_filters',
     # First app
-    'core',
     'goals',
+    'core',
+
 ]
 
 if DEBUG:
-    INSTALLED_APPS += ['django_extensions',]
+    INSTALLED_APPS += ['django_extensions']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
