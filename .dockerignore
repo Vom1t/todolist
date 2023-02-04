@@ -5,8 +5,8 @@
 # except
 !todolist/**
 !core/**
+!goals/**
 !manage.py
 !poetry.lock
 !pyproject.toml
 !entrypoint.sh
-#!static/**
