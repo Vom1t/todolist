@@ -50,7 +50,7 @@ class Command(BaseCommand):
                     if not tg_user.user_id:
                         self.tg_client.send_message(chat_id=chat_id, text=f'Привет {user.username or user.first_name}')
                         verification_code = tg_user.generate_verification_code()
-                        self.tg_client.send_message(chat_id=chat_id, text=f'Подтвердите, пожалуйста, свой аккаунт.'
+                        self.tg_client.send_message(chat_id=chat_id, text=f'Подтвердите, пожалуйста, свой аккаунт. '
                                                                           f'vomit.ga '
                                                                           f'CODE: {verification_code} ')
                     else:
