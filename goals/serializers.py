@@ -125,9 +125,6 @@ class BoardSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('id', 'created', 'updated')
 
-    def validate_participants(self, participants: list[BoardParticipant]):
-        pass
-
     def update(self, instance, validated_data):  # noqa: CCR001
         owner = self.context['request'].user
         new_participants = validated_data.pop('participants', [])

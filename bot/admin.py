@@ -1,3 +1,12 @@
-# from django.contrib import admin
+from django.contrib import admin
 
-# Register your models here.
+from bot.models import TgUser
+
+
+class TgUserAdmin(admin.ModelAdmin):
+    list_display = ('tg_id', 'username', 'user')
+    list_filter = ('tg_id', 'username')
+    readonly_fields = ('tg_id', 'username', 'user_id', 'verification_code', 'user')
+
+
+admin.site.register(TgUser, TgUserAdmin)
