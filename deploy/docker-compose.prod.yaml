@@ -55,7 +55,7 @@ services:
     command: redis-server
 
   telegram_bot:
-    image: ${DOCKER_HUB_USERNAME}/diplom:latest
+    image: ${DOCKERHUB_USERNAME}/todolist:${TAG_NAME}
     restart: always
     env_file:
       - .env
