@@ -16,12 +16,21 @@ Including another URLconf
 from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
+from requests import Response
+from rest_framework.decorators import api_view
+
+
+@api_view(['GET'])
+def health_check(request):
+    return Response({'status': 'OK'})
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('core/', include('core.urls')),
-    path('goals/', include('goals.urls')),
+    path('core/', include(('core.urls', 'core'))),
+    path('goals/', include(('goals.urls', 'goals'))),
     path('oauth/', include('social_django.urls', namespace='social')),
+    path('ping/', health_check, name='health-check'),
     path('bot/', include('bot.urls')),
 ]
 
