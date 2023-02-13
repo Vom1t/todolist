@@ -45,8 +45,29 @@ services:
     volumes:
       - django_static:/opt/static
 
+  redis:
+    image: redis:7.0.8-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server
+
+  telegram_bot:
+    build: .
+    env_file:
+      - .env
+    restart: always
+    environment:
+      DB_HOST: db
+    depends_on:
+      api:
+        condition: service_started
+      redis:
+        condition: service_started
+    command: python3 manage.py runbot
+
   frontend:
-    image: sermalenk/skypro-front:lesson-37
+    image: sermalenk/skypro-front:lesson-38
     restart: always
     ports:
       -  "80:80"

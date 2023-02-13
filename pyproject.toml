@@ -16,6 +16,10 @@ djangorestframework = "^3.14.0"
 social-auth-app-django = "^5.0.0"
 django-filter = "^22.1"
 django-extensions = "^3.2.1"
+pydantic = "^1.10.4"
+requests = "^2.28.2"
+redis = "^4.4.2"
+django-redis = "^5.2.0"
 
 
 [tool.poetry.group.dev.dependencies]
