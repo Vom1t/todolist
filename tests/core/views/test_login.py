@@ -7,9 +7,12 @@ from tests.utils import BaseTestCase
 
 @pytest.mark.django_db()
 class TestLoginView(BaseTestCase):
+    """Тест на авторизацию"""
     url = reverse('core:login')
 
     def test_user_not_found(self, client, user_factory):
+        """Проверка на нахождения юзера в БД"""
+
         user = user_factory.build()
         response = client.post(self.url, data={
             'username': user.username,
@@ -18,6 +21,8 @@ class TestLoginView(BaseTestCase):
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_invalid_credentials(self, client, user, faker):
+        """Проверка ввода данных"""
+
         response = client.post(self.url, data={
             'username': user.username,
             'password': faker.password(),
@@ -29,6 +34,8 @@ class TestLoginView(BaseTestCase):
         (False, status.HTTP_403_FORBIDDEN),
     ], ids=['active', 'inactive'])
     def test_inactive_user_login_denied(self, client, user_factory, faker, is_active, status_code):
+        """Проверка на активность пользователя"""
+
         password = faker.password()
         user = user_factory.create(password=password, is_active=is_active)
         response = client.post(self.url, data={

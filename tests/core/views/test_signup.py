@@ -7,9 +7,12 @@ from tests.utils import BaseTestCase
 
 @pytest.mark.django_db()
 class TestSignupView(BaseTestCase):
+    """Тест на регистрацию"""
     url = reverse('core:signup')
 
     def test_passwords_missmatch(self, client, faker):
+        """Проверка правильности пароля"""
+
         response = client.post(self.url, data={
             'username': faker.user_name(),
             'password': faker.password(),
@@ -19,6 +22,8 @@ class TestSignupView(BaseTestCase):
         assert response.json() == {'password_repeat': ['Passwords must match']}
 
     def test_invalid_password(self, client, faker, invalid_password):
+        """Проверка верности пароля"""
+
         response = client.post(self.url, data={
             'username': faker.user_name(),
             'password': invalid_password,

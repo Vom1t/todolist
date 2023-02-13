@@ -7,13 +7,19 @@ from tests.utils import BaseTestCase
 
 @pytest.mark.django_db()
 class TestUpdatePasswordView(BaseTestCase):
+    """Тест на обновление пароля"""
+
     url = reverse('core:update-password')
 
     def test_auth_required(self, client):
+        """Проверка авторизации"""
+
         response = client.patch(self.url)
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_invalid_old_password(self, auth_client, faker):
+        """Проверка валидности паспорта """
+
         response = auth_client.patch(self.url, data={
             'old_password': faker.password(),
             'new_password': faker.password(),
@@ -22,6 +28,8 @@ class TestUpdatePasswordView(BaseTestCase):
         assert response.json() == {'old_password': ['Password is incorrect!']}
 
     def test_weak_new_password(self, client, user_factory, faker, invalid_password):
+        """Проверка нового пароля"""
+
         password = faker.password()
         user = user_factory.create(password=password)
 

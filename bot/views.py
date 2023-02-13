@@ -9,10 +9,13 @@ from todolist.settings import BOT_TOKEN
 
 
 class VerificationCodeView(UpdateAPIView):
+    """Вью указания кода верификации """
     queryset = TgUser.objects.all()
     serializer_class = PatchVerificationSerializer
 
     def update(self, request, *args, **kwargs):
+        """Функция редактирования поля verification_code"""
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)

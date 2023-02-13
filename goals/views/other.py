@@ -13,11 +13,15 @@ from goals.serializers import (
 
 
 class GoalCategoryCreateView(generics.CreateAPIView):
+    """Вью создания категории"""
+
     permission_classes = [GoalCategoryPermissions]
     serializer_class = GoalCategoryCreateSerializer
 
 
 class GoalCategoryListView(generics.ListAPIView):
+    """Вью отображения списка категорий"""
+
     model = GoalCategory
     permission_classes = [GoalCategoryPermissions]
     serializer_class = GoalCategorySerializer
@@ -35,6 +39,8 @@ class GoalCategoryListView(generics.ListAPIView):
 
 
 class GoalCategoryView(generics.RetrieveUpdateDestroyAPIView):
+    """Вью отображения, редактирования и удаления категории"""
+
     model = GoalCategory
     serializer_class = GoalCategorySerializer
     permission_classes = [GoalCategoryPermissions, IsOwnerOrReadOnly]
@@ -54,11 +60,15 @@ class GoalCategoryView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class GoalCreateView(generics.CreateAPIView):
+    """Вью создания цели"""
+
     serializer_class = GoalCreateSerializer
     permission_classes = [GoalPermissions]
 
 
 class GoalListView(generics.ListAPIView):
+    """Вью отображения списка целей"""
+
     model = Goal
     permission_classes = [GoalPermissions]
     serializer_class = GoalSerializer
@@ -76,6 +86,8 @@ class GoalListView(generics.ListAPIView):
 
 
 class GoalView(generics.RetrieveUpdateAPIView):
+    """Вью отображения, редактирования и удаления цели"""
+
     model = Goal
     permission_classes = [GoalPermissions, IsOwnerOrReadOnly]
     serializer_class = GoalSerializer
@@ -85,11 +97,15 @@ class GoalView(generics.RetrieveUpdateAPIView):
 
 
 class GoalCommentCreateView(generics.CreateAPIView):
+    """Вью создания комментария"""
+
     serializer_class = GoalCommentCreateSerializer
     permission_classes = [CommentsPermissions]
 
 
 class GoalCommentListView(generics.ListAPIView):
+    """Вью отображения списка комментариев"""
+
     model = GoalComment
     permission_classes = [CommentsPermissions]
     serializer_class = GoalCommentSerializer
@@ -104,6 +120,8 @@ class GoalCommentListView(generics.ListAPIView):
 
 
 class GoalCommentView(generics.RetrieveUpdateDestroyAPIView):
+    """Вью отображения, редактирования и удаления комментария"""
+
     model = GoalComment
     permission_classes = [CommentsPermissions, IsOwnerOrReadOnly]
     serializer_class = GoalCommentSerializer

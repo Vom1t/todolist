@@ -8,6 +8,7 @@ from goals.models import GoalCategory, GoalComment, Goal, Board, BoardParticipan
 
 
 class GoalCategoryCreateSerializer(serializers.ModelSerializer):
+    """Сериализатор создания категории"""
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
@@ -16,6 +17,7 @@ class GoalCategoryCreateSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'created', 'updated', 'user', 'is_deleted')
 
     def validate_board(self, value: Board) -> Board:
+        """Функция проверки на разрешение редактирования доски, и не удалена ли она"""
         if value.is_deleted:
             raise serializers.ValidationError('Board is deleted')
 
@@ -29,6 +31,8 @@ class GoalCategoryCreateSerializer(serializers.ModelSerializer):
 
 
 class GoalCategorySerializer(serializers.ModelSerializer):
+    """Сериализатор категории целей"""
+
     user = ProfileSerializer(read_only=True)
 
     class Meta:
@@ -41,6 +45,8 @@ class GoalCategorySerializer(serializers.ModelSerializer):
 
 
 class GoalCreateSerializer(serializers.ModelSerializer):
+    """Сериализатор создания целей"""
+
     category = serializers.PrimaryKeyRelatedField(
         queryset=GoalCategory.objects.filter(is_deleted=False)
     )
@@ -52,6 +58,11 @@ class GoalCreateSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'created', 'updated', 'user')
 
     def validate_category(self, value: GoalCategory):
+        """
+        Функция валидации данных категории целей. Проверяет, является ли
+        пользователь создателем категории, или является writer'ом
+        """
+
         if not BoardParticipant.objects.filter(
                 board_id=value.board_id,
                 role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer],
@@ -62,18 +73,27 @@ class GoalCreateSerializer(serializers.ModelSerializer):
 
 
 class GoalSerializer(serializers.ModelSerializer):
+    """Сериализатор цели"""
+
     class Meta:
         model = Goal
         fields = '__all__'
         read_only_fields = ('id', 'created', 'updated', 'user')
 
     def validate_category(self, value: GoalCategory):
+        """
+        Функция валидации данных категории целей.
+        Проверяет, является ли пользователь создателем категории целей
+        """
+
         if self.context['request'].user.id != value.user_id:
             raise exceptions.PermissionDenied
         return value
 
 
 class GoalCommentCreateSerializer(serializers.ModelSerializer):
+    """Сериализатор создания комментария"""
+
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
@@ -82,6 +102,11 @@ class GoalCommentCreateSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'created', 'updated', 'user')
 
     def validate_goal(self, value: Goal):
+        """
+        Функция валидации данных комментарий целей.
+        Проверяет, является ли пользователь создателем категории целей или writer'ом
+        """
+
         if not BoardParticipant.objects.filter(
                 board=value.category.board_id,
                 role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer],
@@ -92,6 +117,8 @@ class GoalCommentCreateSerializer(serializers.ModelSerializer):
 
 
 class GoalCommentSerializer(serializers.ModelSerializer):
+    """Сериализатор комментариев"""
+
     user = ProfileSerializer(read_only=True)
 
     class Meta:
@@ -101,6 +128,8 @@ class GoalCommentSerializer(serializers.ModelSerializer):
 
 
 class BoardCreateSerializer(serializers.ModelSerializer):
+    """Сериализатор создания новой доски"""
+
     class Meta:
         model = Board
         read_only_fields = ('id', 'created', 'updated', 'is_deleted')
@@ -108,6 +137,8 @@ class BoardCreateSerializer(serializers.ModelSerializer):
 
 
 class BoardParticipantSerializer(serializers.ModelSerializer):
+    """Сериализатор других участников доски"""
+
     role = serializers.ChoiceField(required=True, choices=BoardParticipant.Role.choices[1:])
     user = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all())
 
@@ -118,6 +149,8 @@ class BoardParticipantSerializer(serializers.ModelSerializer):
 
 
 class BoardSerializer(serializers.ModelSerializer):
+    """Сериализатор отображения доски"""
+
     participants = BoardParticipantSerializer(many=True)
 
     class Meta:
@@ -125,7 +158,9 @@ class BoardSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('id', 'created', 'updated')
 
-    def update(self, instance, validated_data):  # noqa: CCR001
+    def update(self, instance, validated_data):
+        """Функция редактирования и добавления участников доски"""
+
         owner = self.context['request'].user
         new_participants = validated_data.pop('participants', [])
         new_by_id = {part['user'].id: part for part in new_participants}
@@ -153,6 +188,7 @@ class BoardSerializer(serializers.ModelSerializer):
 
 
 class BoardListSerializer(serializers.ModelSerializer):
+    """Сериализатор списка досок"""
     class Meta:
         model = Board
         fields = '__all__'
