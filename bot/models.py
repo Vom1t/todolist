@@ -1,5 +1,4 @@
 import os
-import redis
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -8,6 +7,8 @@ from core.models import User
 
 
 class TgUser(models.Model):
+    """Модели пользователя бота"""
+
     tg_id = models.CharField(verbose_name=_('Tg id'), max_length=150)
     username = models.CharField(verbose_name=_('Tg username'), max_length=150, null=True, blank=True)
     verification_code = models.CharField(verbose_name=_('Verification code'), max_length=255, null=True, blank=True)
@@ -28,17 +29,9 @@ class TgUser(models.Model):
         return self.username
 
     def generate_verification_code(self):
+        """
+        Функция регенерации верификационного кода
+        """
         self.verification_code = os.urandom(16).hex()
         self.save(update_fields=('verification_code',))
         return self.verification_code
-
-
-class Redis:
-    def __new__(cls):
-        if not hasattr(cls, 'instance'):
-            cls.instance = super(Redis, cls).__new__(cls)
-        return cls.instance
-
-    @property
-    def redis(self):
-        return redis.StrictRedis()

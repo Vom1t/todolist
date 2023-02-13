@@ -13,16 +13,22 @@ def another_user(user_factory):
 
 @pytest.mark.django_db()
 class TestRetrieveBoardView(BaseTestCase):
+    """Тест взятия данных из доски"""
+
     @pytest.fixture(autouse=True)
     def setup(self, board_factory, user):  # noqa: PT004
         self.board = board_factory.create(with_owner=user)
         self.url = reverse('goals:board', args=[self.board.id])
 
     def test_auth_required(self, client):
+        """Проверка авторизации"""
+
         response = client.get(self.url, {})
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_user_not_board_participant(self, client, another_user):
+        """Проверка на нахождения в доске"""
+
         assert not self.board.participants.filter(user=another_user).count()
 
         client.force_login(another_user)
@@ -58,6 +64,7 @@ class TestRetrieveBoardView(BaseTestCase):
 
 @pytest.mark.django_db()
 class TestDestroyBoardView(BaseTestCase):
+    """Тест удаления доски"""
 
     @pytest.fixture(autouse=True)
     def setup(self, board_factory, goal_category_factory, goal_factory, user):  # noqa: PT004
@@ -68,10 +75,14 @@ class TestDestroyBoardView(BaseTestCase):
         self.participant: BoardParticipant = self.board.participants.last()
 
     def test_auth_required(self, client):
+        """Проверка авторизации"""
+
         response = client.delete(self.url, {})
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_user_not_board_participant(self, client, another_user):
+        """Проверка на нахождения в доске"""
+
         assert not self.board.participants.filter(user=another_user).count()
 
         client.force_login(another_user)
@@ -84,6 +95,8 @@ class TestDestroyBoardView(BaseTestCase):
         ids=['writer', 'reader']
     )
     def test_only_owner_have_to_delete_board(self, auth_client, user_role):
+        """Проверка на хозяина доски"""
+
         self.participant.role = user_role
         self.participant.save(update_fields=('role',))
 
@@ -106,6 +119,8 @@ class TestDestroyBoardView(BaseTestCase):
 
 @pytest.mark.django_db()
 class TestUpdateBoardView(BaseTestCase):
+    """Тест обновления доски"""
+
     @pytest.fixture(autouse=True)
     def setup(self, board_factory, user):  # noqa: PT004
         self.board = board_factory.create(with_owner=user)
@@ -114,11 +129,15 @@ class TestUpdateBoardView(BaseTestCase):
 
     @pytest.mark.parametrize('method', ['put', 'patch'])
     def test_auth_required(self, client, method):
+        """Проверка авторизации"""
+
         response = getattr(client, method)(self.url, {})
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     @pytest.mark.parametrize('method', ['put', 'patch'])
     def test_user_not_board_participant(self, client, another_user, method):
+        """Проверка на нахождения в доске"""
+
         assert not self.board.participants.filter(user=another_user).count()
 
         client.force_login(another_user)
@@ -131,6 +150,8 @@ class TestUpdateBoardView(BaseTestCase):
         ids=['writer', 'reader']
     )
     def test_reader_or_writer_failed_to_update_board(self, faker, user_role, auth_client):
+        """Проверка на того кто может обновлять доску"""
+
         self.participant.role = user_role
         self.participant.save(update_fields=('role',))
 
@@ -138,6 +159,8 @@ class TestUpdateBoardView(BaseTestCase):
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_update_title_by_owner(self, auth_client, faker):
+        """Проверка может ли создатель обновить доску"""
+
         assert self.participant.role == BoardParticipant.Role.owner
         new_title = faker.sentence()
 
@@ -148,7 +171,9 @@ class TestUpdateBoardView(BaseTestCase):
         assert self.board.title == new_title
 
     def test_failed_to_set_many_owners(self, auth_client, another_user):
-        response = auth_client.patch(self.url, {  # noqa ECE001
+        """Проверка на того кто может обновлять доску"""
+
+        response = auth_client.patch(self.url, {
             'participants': [
                 {
                     'role': BoardParticipant.Role.owner,
@@ -164,6 +189,8 @@ class TestUpdateBoardView(BaseTestCase):
         assert BoardParticipant.objects.count() == 1
 
     def test_failed_to_delete_all_participants_including_owner(self, auth_client):
+        """Проверка кто может удалить доску"""
+
         assert BoardParticipant.objects.count() == 1
 
         response = auth_client.patch(self.url, {
@@ -177,6 +204,7 @@ class TestUpdateBoardView(BaseTestCase):
         BoardParticipant.Role.reader,
     ], ids=['writer', 'reader'])
     def test_only_owner_cat_edit_board(self, client, another_user, faker, role):
+        """Проверка может ли создатель обновить доску"""
         BoardParticipant.objects.create(board=self.board, user=another_user, role=role)
 
         client.force_login(another_user)
@@ -184,6 +212,8 @@ class TestUpdateBoardView(BaseTestCase):
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_add_new_participant(self, auth_client, another_user):
+        """Проверка на добавление нового участника в доску"""
+
         assert BoardParticipant.objects.count() == 1
 
         response = auth_client.patch(self.url, {
@@ -198,6 +228,8 @@ class TestUpdateBoardView(BaseTestCase):
         assert BoardParticipant.objects.count() == 2
 
     def test_delete_participant_from_board(self, auth_client, another_user):
+        """Проверка на удаление участника из доски"""
+
         BoardParticipant.objects.create(
             board=self.board,
             user=another_user,
@@ -210,6 +242,8 @@ class TestUpdateBoardView(BaseTestCase):
         assert BoardParticipant.objects.count() == 1
 
     def test_change_board_participant_role(self, auth_client, another_user):
+        """Проверка на изменение роли другого участника в доске"""
+
         BoardParticipant.objects.create(
             board=self.board,
             user=another_user,

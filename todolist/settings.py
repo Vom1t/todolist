@@ -141,6 +141,7 @@ AUTH_USER_MODEL = 'core.User'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# SOCIAL_AUTH
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
 SOCIAL_AUTH_JSONFIELD_CUSTOM = 'django.db.models.JSONField'
 SOCIAL_AUTH_VK_OAUTH2_KEY = os.environ.get('VK_OAUTH2_KEY')
@@ -159,13 +160,14 @@ SOCIAL_AUTH_VK_EXTRA_DATA = [
 SOCIAL_AUTH_NEW_USER_REDIRECT_URL = '/logged-in/'
 SOCIAL_AUTH_USER_MODEL = 'core.User'
 
+# REST_FRAMEWORK
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S',
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
-
+# LOGGER
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -197,5 +199,6 @@ LOGGING = {
     }
 }
 
+# TG_TOKEN
 
 BOT_TOKEN = os.getenv('BOT_TOKEN')

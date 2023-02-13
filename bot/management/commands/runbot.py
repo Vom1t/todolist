@@ -31,11 +31,15 @@ class Command(BaseCommand):
         }
 
     def _check_user_existence(self, user: MessageFrom, chat_id: str) -> TgUser:
+        """Проверка наличия пользователя"""
+
         tg_user, _ = self.tg_user.objects.get_or_create(tg_id=chat_id,
                                                         username=user.id)
         return tg_user
 
     def handle(self, *args, **options):
+        """Ручка на реакцию бота, когда начинается чат"""
+
         offset = 0
 
         while True:
@@ -57,6 +61,8 @@ class Command(BaseCommand):
                         self._get_message_authorized_users(item.message, tg_user)
 
     def _get_message_authorized_users(self, message: Message, tg_user: TgUser):
+        """Проверка на получение команды от авторизирован ого пользователя"""
+
         user_state = redis_instance.get(tg_user.tg_id)
         if message.text == '/cancel':
             redis_instance.delete(tg_user.tg_id)
@@ -75,6 +81,8 @@ class Command(BaseCommand):
         self.tg_client.send_message(chat_id=message.chat.id, text='неизвестная команда')
 
     def _get_goals(self, message: Message, tg_user: TgUser) -> str:
+        """Команда на получение команды категорий"""
+
         user_goals: list[Goal] = Goal.objects.prefetch_related('category').filter(
             Q(category__board__participants__user_id=tg_user.user_id) &
             ~Q(status=Goal.Status.archived) &
@@ -85,6 +93,8 @@ class Command(BaseCommand):
         return goals_list if goals_list else 'Цели не найдены'
 
     def _create_category(self, message: Message, tg_user: TgUser):
+        """Команда создания категорий"""
+
         self.tg_client.send_message(chat_id=message.chat.id,
                                     text='Введите название категории для создания или /cancel для отмены'
                                     )
@@ -97,6 +107,8 @@ class Command(BaseCommand):
         redis_instance.set(tg_user.tg_id, 'set_name_category')
 
     def _set_name_category(self, message: Message, tg_user: TgUser):
+        """Получение списка категорий"""
+
         goal_category: list[GoalCategory] = GoalCategory.objects.prefetch_related('board__participants__user').filter(
             Q(board__participants__user_id=tg_user.user_id) &
             Q(is_deleted=False) &
@@ -111,6 +123,8 @@ class Command(BaseCommand):
         self.tg_client.send_message(chat_id=message.chat.id, text='Не верное имя категории попробуйте еще раз')
 
     def _set_name_goal(self, message: Message, tg_user: TgUser):
+        """Получение списка целий"""
+
         obj = Goal.objects.create(user_id=tg_user.user_id,
                                   title=message.text,
                                   category_id=int(redis_instance.get(f'{tg_user.tg_id}cat_name'))

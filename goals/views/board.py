@@ -7,6 +7,8 @@ from goals.serializers import BoardCreateSerializer, BoardListSerializer, BoardS
 
 
 class BoardCreateView(generics.CreateAPIView):
+    """Вью создания доски"""
+
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = BoardCreateSerializer
 
@@ -16,6 +18,8 @@ class BoardCreateView(generics.CreateAPIView):
 
 
 class BoardListView(generics.ListAPIView):
+    """Вью отображения списка досок"""
+
     model = Board
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = BoardListSerializer
@@ -31,6 +35,8 @@ class BoardListView(generics.ListAPIView):
 
 
 class BoardView(generics.RetrieveUpdateDestroyAPIView):
+    """Вью отображения, редактирования и удаления доски"""
+
     model = Board
     permission_classes = [BoardPermissions]
     serializer_class = BoardSerializer

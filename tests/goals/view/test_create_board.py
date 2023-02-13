@@ -8,13 +8,19 @@ from goals.models import Board, BoardParticipant
 
 @pytest.mark.django_db()
 class TestCreateBoardView(BaseTestCase):
+    """Тест создания Доски"""
+
     url = reverse('goals:create-board')
 
     def test_auth_required(self, client, faker):
+        """Проверка авторизации"""
+
         response = client.post(self.url, data=faker.pydict(1))
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_failed_to_create_deleted_board(self, auth_client, faker):
+        """Проверка на удаленность"""
+
         response = auth_client.post(self.url, data={
             'title': faker.sentence(),
             'is_deleted': True
@@ -24,6 +30,8 @@ class TestCreateBoardView(BaseTestCase):
         assert not new_board.is_deleted
 
     def test_creates_board_participant(self, auth_client, user, faker):
+        """Проверка на участников доски"""
+
         response = auth_client.post(self.url, data={
             'title': faker.sentence(),
         })

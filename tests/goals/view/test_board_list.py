@@ -7,13 +7,19 @@ from tests.utils import BaseTestCase
 
 @pytest.mark.django_db()
 class TestBoardListView(BaseTestCase):
+    """Тест просмотра списка досок"""
+
     url = reverse('goals:board-list')
 
     def test_auth_required(self, client):
+        """Проверка авторизации"""
+
         response = client.get(self.url)
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_user_not_board_participant(self, auth_client, board, user, board_factory):
+        """Проверка на нахождения в доске"""
+
         assert not board.participants.count()
         another_board = board_factory.create(with_owner=user)
         assert another_board.participants.count() == 1
@@ -31,6 +37,8 @@ class TestBoardListView(BaseTestCase):
         ]
 
     def test_sort_boards_by_title(self, auth_client, board_factory, user):
+        """Проверка сортировки досок по названию"""
+
         for title in ['t2', 't1', 't4', 't3']:
             board_factory.create(title=title, with_owner=user)
 
@@ -39,6 +47,8 @@ class TestBoardListView(BaseTestCase):
         assert [board['title'] for board in response.json()] == ['t1', 't2', 't3', 't4']
 
     def test_board_pagination(self, auth_client, board_factory, user):
+        """Проверка пагинации досок"""
+
         board_factory.create_batch(size=10, with_owner=user)
 
         limit_response = auth_client.get(self.url, {'limit': 3})

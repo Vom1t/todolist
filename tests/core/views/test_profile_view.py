@@ -8,9 +8,13 @@ from tests.utils import BaseTestCase
 
 @pytest.mark.django_db()
 class TestProfileRetrieveView(BaseTestCase):
+    """Тест получения данных на пользователя"""
+
     url = reverse('core:profile')
 
     def test_auth_required(self, client):
+        """Проверка авторизации"""
+
         response = client.get(self.url)
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
@@ -28,9 +32,13 @@ class TestProfileRetrieveView(BaseTestCase):
 
 @pytest.mark.django_db()
 class TestProfileUpdateView:
+    """Тест на обновление пользователя"""
+
     url = reverse('core:profile')
 
     def test_auth_required(self, client, faker):
+        """Проверка авторизации"""
+
         response = client.get(self.url, data=faker.pydict(1))
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
@@ -50,13 +58,19 @@ class TestProfileUpdateView:
 
 @pytest.mark.django_db()
 class TestDestroyProfileView:
+    """Тест удаления профиля"""
+
     url = reverse('core:profile')
 
     def test_auth_required(self, client):
+        """Проверка авторизации"""
+
         response = client.get(self.url)
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_user_not_deleted(self, django_user_model, auth_client):
+        """Проверка на удаление пользователя"""
+
         initial_count: int = django_user_model.objects.count()
         response = auth_client.delete(self.url)
         assert response.status_code == status.HTTP_204_NO_CONTENT
@@ -64,6 +78,8 @@ class TestDestroyProfileView:
 
     @pytest.mark.parametrize('backend', settings.AUTHENTICATION_BACKENDS)
     def test_cleanup_cookie(self, client, user, backend):
+        """Проверка отчистки куки"""
+
         client.force_login(user=user, backend=backend)
         assert client.cookies['sessionid'].value
         response = client.delete(self.url)

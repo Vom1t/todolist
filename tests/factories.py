@@ -7,6 +7,8 @@ from goals.models import BoardParticipant
 
 @register
 class UserFactory(factory.django.DjangoModelFactory):
+    """Фабрика по созданию модели User"""
+
     username = factory.Faker('user_name')
     password = factory.Faker('password')
     email = ''
@@ -29,6 +31,8 @@ class DatesFactoryMixin(factory.django.DjangoModelFactory):
 
 @register
 class BoardFactory(DatesFactoryMixin):
+    """Фабрика по созданию модели Board"""
+
     title = factory.Faker('sentence')
 
     class Meta:
@@ -42,6 +46,8 @@ class BoardFactory(DatesFactoryMixin):
 
 @register
 class BoardParticipantFactory(DatesFactoryMixin):
+    """Фабрика по созданию модели BoardParticipant"""
+
     board = factory.SubFactory(BoardFactory)
     user = factory.SubFactory(UserFactory)
 
@@ -51,6 +57,8 @@ class BoardParticipantFactory(DatesFactoryMixin):
 
 @register
 class GoalCategoryFactory(DatesFactoryMixin):
+    """Фабрика по созданию модели GoalCategory"""
+
     board = factory.SubFactory(BoardFactory)
     title = factory.Faker('sentence')
     user = factory.SubFactory(UserFactory)
@@ -61,6 +69,8 @@ class GoalCategoryFactory(DatesFactoryMixin):
 
 @register
 class GoalFactory(DatesFactoryMixin):
+    """Фабрика по созданию модели Goal"""
+
     user = factory.SubFactory(UserFactory)
     category = factory.SubFactory(GoalCategoryFactory)
     title = factory.Faker('sentence')
@@ -71,6 +81,8 @@ class GoalFactory(DatesFactoryMixin):
 
 @register
 class GoalCommentFactory(DatesFactoryMixin):
+    """Фабрика по созданию модели GoalComment"""
+
     user = factory.SubFactory(UserFactory)
     goal = factory.SubFactory(GoalFactory)
     text = factory.Faker('text')
